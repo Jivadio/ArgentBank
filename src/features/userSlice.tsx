@@ -25,10 +25,22 @@ export const userSlice = createSlice({
       sessionStorage.removeItem("userSession")
       state.user = null
     },
+    updateUser: (state, action) => {
+      const user = JSON.parse(state.user?.toString() || "")
+      user.firstName = action.payload.firstName
+      user.lastName = action.payload.lastName
+      if (localStorage.getItem("user")) {
+        localStorage.setItem("user", JSON.stringify(user))
+      }
+      if (sessionStorage.getItem("userSession")) {
+        sessionStorage.setItem("userSession", JSON.stringify(user))
+      }
+      state.user = JSON.stringify(user)
+    },
   },
 })
 
-export const { login, logout } = userSlice.actions
+export const { login, logout, updateUser } = userSlice.actions
 
 export const selectUser = (state: any) => state.user.user
 

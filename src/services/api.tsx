@@ -57,3 +57,37 @@ export async function getUserProfile(token = null): Promise<any> {
     console.error("There was a problem with the fetch operation:", error)
   }
 }
+
+export async function updateUserProfile({
+  firstName,
+  lastName,
+}: {
+  firstName: string
+  lastName: string
+}): Promise<any> {
+  console.log("firstName", firstName)
+  console.log("lastName", lastName)
+  try {
+    const token = localStorage.getItem("token")
+    const response = await fetch(baseUrl + "/user/profile", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        firstName: firstName,
+        lastName: lastName,
+      }),
+    })
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok")
+    }
+
+    const data = await response.json()
+    return data.body
+  } catch (error) {
+    console.error("There was a problem with the fetch operation:", error)
+  }
+}

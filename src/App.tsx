@@ -5,6 +5,7 @@ import { AppLayout } from "./layouts/AppLayout"
 import { Home } from "./pages/Home/Home"
 import { Login } from "./pages/Login/Login"
 import { IsAuth } from "./components/IsAuth"
+import { Account } from "./pages/Account/Account"
 import { QueryClient, QueryClientProvider } from "react-query"
 
 const queryClient = new QueryClient()
@@ -20,7 +21,11 @@ function App() {
               <Route path="/home" element={<Home />} />
               <Route
                 path="/login"
-                element={<IsAuth Child={Login} requireAuth={true} />}
+                element={<IsAuth Child={Login} requireAuth={false} />}
+              />
+              <Route
+                path="/account"
+                element={<IsAuth Child={Account} requireAuth={true} />}
               />
             </Routes>
           </QueryClientProvider>

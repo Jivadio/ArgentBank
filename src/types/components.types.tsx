@@ -3,3 +3,9 @@ export interface cardProps {
   title: string
   text: string
 }
+
+export interface accountProps {
+  title: string
+  amount: string
+  amountDescription: string
+}

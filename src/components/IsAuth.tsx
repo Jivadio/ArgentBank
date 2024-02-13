@@ -10,7 +10,7 @@ export const IsAuth = ({
   requireAuth: boolean
 }): JSX.Element => {
   const user = useSelector(selectUser)
-  console.log("user", user)
+  console.log("user", requireAuth)
   if (!requireAuth && user) {
     return <Navigate to="/account" />
   }
