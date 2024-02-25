@@ -9,7 +9,7 @@ import {
 } from "@heroicons/react/16/solid"
 
 export function Header() {
-  const user = JSON.parse(useSelector(selectUser))
+  const user = useSelector(selectUser)
   const dispatch = useDispatch()
 
   const userLogout = () => {

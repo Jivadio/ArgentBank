@@ -8,7 +8,7 @@ import { updateUserProfile } from "../../services/api"
 import { useMutation } from "react-query"
 
 export function Account() {
-  const user = JSON.parse(useSelector(selectUser))
+  const user = useSelector(selectUser)
   const dispatch = useDispatch()
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
@@ -20,13 +20,18 @@ export function Account() {
       setShowModal(false)
     },
     onError: error => {
-      alert("Something went wrong")
+      alert("Something went wrong" + error)
     },
   })
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async e => {
     e.preventDefault()
-    updateProfileMutation.mutate({ firstName, lastName })
+    console.log("Updating profile with:", {
+      token: user.token,
+      firstName,
+      lastName,
+    })
+    updateProfileMutation.mutate({ token: user.token, firstName, lastName })
   }
 
   return (
@@ -36,7 +41,7 @@ export function Account() {
           <h1>
             Welcome back
             <br />
-            {user.firstName} {user.lastName}
+            {user?.firstName} {user?.lastName}
           </h1>
 
           <button
@@ -53,13 +58,13 @@ export function Account() {
             <div className={styles.edit_modal_content}>
               <input
                 type="text"
-                placeholder={user.firstName}
+                placeholder={user?.firstName}
                 className={styles.edit_modal_content_input}
                 onChange={e => setFirstName(e.target.value)}
               />
               <input
                 type="text"
-                placeholder={user.lastName}
+                placeholder={user?.lastName}
                 className={styles.edit_modal_content_input}
                 onChange={e => setLastName(e.target.value)}
               />
@@ -70,6 +75,7 @@ export function Account() {
                 Save
               </button>
               <button
+                type="button"
                 className={styles.edit_modal_buttons_btn}
                 onClick={() => setShowModal(!showModal)}
               >

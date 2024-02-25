@@ -1,30 +1,30 @@
-import styles from "./Login.module.css"
-import { useState } from "react"
+import React, { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { login } from "../../features/userSlice"
 import { useMutation } from "react-query"
 import { signIn, getUserProfile } from "../../services/api"
 import { UserCircleIcon } from "@heroicons/react/16/solid"
+import styles from "./Login.module.css"
 
 export function Login() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [rememberMe, setRememberMe] = useState(false)
+  const [email, setEmail] = useState<string>("")
+  const [password, setPassword] = useState<string>("")
+  const [rememberMe, setRememberMe] = useState<boolean>(false)
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const signInMutation = useMutation(signIn, {
-    onSuccess: async token => {
+    onSuccess: async data => {
+      const token = data
       const userProfile = await getUserProfile(token)
       if (userProfile) {
         dispatch(
           login({
+            ...userProfile,
             token,
             rememberMe,
-            firstName: userProfile.firstName,
-            lastName: userProfile.lastName,
           }),
         )
         navigate("/account")
@@ -32,13 +32,13 @@ export function Login() {
         alert("Invalid credentials")
       }
     },
-    onError: error => {
+    onError: (error: Error) => {
       console.error(error)
       alert("An error occurred")
     },
   })
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     signInMutation.mutate({ email, password })
   }
@@ -73,7 +73,7 @@ export function Login() {
             <input
               type="checkbox"
               id="remember-me"
-              defaultChecked={rememberMe}
+              checked={rememberMe}
               onChange={() => setRememberMe(!rememberMe)}
             />
             <label htmlFor="remember-me">Remember me</label>

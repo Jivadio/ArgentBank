@@ -1,4 +1,6 @@
-import React from "react"
+import React, { useEffect } from "react"
+import { useDispatch } from "react-redux"
+import { login } from "./features/userSlice"
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom"
 import "./App.css"
 import { AppLayout } from "./layouts/AppLayout"
@@ -11,6 +13,17 @@ import { QueryClient, QueryClientProvider } from "react-query"
 const queryClient = new QueryClient()
 
 function App() {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    const userData = localStorage.getItem("user")
+    if (token && userData) {
+      const user = JSON.parse(userData)
+      dispatch(login({ ...user, token }))
+    }
+  }, [dispatch])
+
   return (
     <React.Fragment>
       <BrowserRouter>

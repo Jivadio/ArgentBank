@@ -1,6 +1,6 @@
-import { Navigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { selectUser } from "../features/userSlice"
+import { Navigate } from "react-router-dom"
 
 export const IsAuth = ({
   Child,
@@ -10,12 +10,15 @@ export const IsAuth = ({
   requireAuth: boolean
 }): JSX.Element => {
   const user = useSelector(selectUser)
-  console.log("user", requireAuth)
-  if (!requireAuth && user) {
-    return <Navigate to="/account" />
-  }
-  if (requireAuth && !user) {
+  const token = localStorage.getItem("token")
+
+  if (requireAuth && !(user || token)) {
     return <Navigate to="/login" />
   }
+
+  if (!requireAuth && (user || token)) {
+    return <Navigate to="/account" />
+  }
+
   return <Child />
 }

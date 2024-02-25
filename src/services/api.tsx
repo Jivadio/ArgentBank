@@ -1,12 +1,21 @@
+interface SignInParams {
+  email: string
+  password: string
+}
+
+interface UserProfile {
+  firstName: string
+  lastName: string
+}
+
+type Token = string
+
 const baseUrl = "http://localhost:3001/api/v1"
 
 export async function signIn({
   email,
   password,
-}: {
-  email: string
-  password: string
-}): Promise<any> {
+}: SignInParams): Promise<Token> {
   try {
     const response = await fetch(baseUrl + "/user/login", {
       method: "POST",
@@ -30,21 +39,14 @@ export async function signIn({
   }
 }
 
-export async function getUserProfile(token = null): Promise<any> {
+export async function getUserProfile(token: Token): Promise<UserProfile> {
   try {
-    const tokenValue = localStorage.getItem("token")
-      ? localStorage.getItem("token")
-      : token
-    const response = await fetch(baseUrl + "/user/profile", {
+    const response = await fetch(`${baseUrl}/user/profile`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${tokenValue}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        firstName: "",
-        lastName: "",
-      }),
     })
 
     if (!response.ok) {
@@ -55,30 +57,23 @@ export async function getUserProfile(token = null): Promise<any> {
     return data.body
   } catch (error) {
     console.error("There was a problem with the fetch operation:", error)
+    throw error
   }
 }
 
 export async function updateUserProfile({
+  token,
   firstName,
   lastName,
-}: {
-  firstName: string
-  lastName: string
 }): Promise<any> {
-  console.log("firstName", firstName)
-  console.log("lastName", lastName)
   try {
-    const token = localStorage.getItem("token")
-    const response = await fetch(baseUrl + "/user/profile", {
+    const response = await fetch(`${baseUrl}/user/profile`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        firstName: firstName,
-        lastName: lastName,
-      }),
+      body: JSON.stringify({ firstName, lastName }),
     })
 
     if (!response.ok) {
@@ -86,8 +81,12 @@ export async function updateUserProfile({
     }
 
     const data = await response.json()
+    if (!data || !data.body) {
+      throw new Error("Invalid data structure")
+    }
     return data.body
   } catch (error) {
     console.error("There was a problem with the fetch operation:", error)
+    throw error
   }
 }
