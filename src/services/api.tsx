@@ -109,7 +109,14 @@ export async function updateUserProfile({
     }
     return data.body
   } catch (error) {
-    console.error("There was a problem with the fetch operation:", error)
-    throw error
+    if (
+      error instanceof TypeError &&
+      error.message.includes("net::ERR_CONNECTION_REFUSED")
+    ) {
+      throw new Error("Cannot connect to server")
+    } else {
+      console.error("There was a problem with the fetch operation:", error)
+      throw error
+    }
   }
 }

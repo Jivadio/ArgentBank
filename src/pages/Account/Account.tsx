@@ -20,7 +20,7 @@ export function Account() {
       setShowModal(false)
     },
     onError: error => {
-      alert("Something went wrong" + error)
+      alert("Something went wrong")
     },
   })
 
