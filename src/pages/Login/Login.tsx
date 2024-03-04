@@ -33,8 +33,14 @@ export function Login() {
       }
     },
     onError: (error: Error) => {
-      console.error(error)
-      alert("An error occurred")
+      let errorMessage = "An unexpected error occurred"
+      if (error.message === "Network response was not ok") {
+        errorMessage =
+          "Problem connecting to the server. Please try again later."
+      } else if (error.message === "Invalid credentials") {
+        errorMessage = "Invalid email or password. Please try again."
+      }
+      alert(errorMessage)
     },
   })
 
